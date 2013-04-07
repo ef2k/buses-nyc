@@ -1,5 +1,8 @@
 /*
  * Buses NYC - A wrapper for the MTA BusTime API
+ * http://github.com/eddflrs/buses-nyc
+ * @author Eddie Flores
+ * @license MIT License
  */
 
 /*global jQuery */
