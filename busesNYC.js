@@ -39,7 +39,6 @@
    * Returns the buses for the requested busline.
    */
   MtaBusTime.prototype.getBuses = function (bus, direction, cb) {
-    console.log('GetBuses');
 
     var data = {
       key: config.key,
@@ -59,7 +58,6 @@
     });
 
     busPromise.done(function (data) {
-      console.log('Bus promise done');
       var monitored = data.Siri.ServiceDelivery.VehicleMonitoringDelivery[0],
         vehicles = monitored.VehicleActivity;
       cb(vehicles);
