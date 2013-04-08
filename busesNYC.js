@@ -46,7 +46,7 @@
       OperatorRef: config.opRef
     };
 
-    if (direction) {
+    if (direction || direction === 0) {
       data.DirectionRef = direction;
     }
 
