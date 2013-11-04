@@ -10,7 +10,7 @@
 (function (root, $) {
   "use strict";
 
-  var MtaBusTime, config, url, searchUrl, monitoringUrl;
+  var MtaBusTime, config, url, searchUrl, vehicleMonitoringUrl;
 
   url = "http://bustime.mta.info/api/siri/";
   searchUrl = "http://bustime.mta.info/api/search";
@@ -19,8 +19,9 @@
     key: "",
     url: url,
     searchUrl: searchUrl,
-    monitoringUrl: url + "vehicle-monitoring.json",
-    opRef: "MTA NYCT"
+    vehicleMonitoringUrl: url + "vehicle-monitoring.json",
+    stopMonitoringUrl: url + "stop-monitoring.json",
+    opRef: "MTA"
   };
 
   /*
@@ -52,7 +53,7 @@
 
     var busPromise = $.ajax({
       type: 'GET',
-      url: config.monitoringUrl,
+      url: config.vehicleMonitoringUrl,
       data: data,
       dataType: "jsonp"
     });
@@ -65,6 +66,37 @@
 
     busPromise.fail(function (error) {
       throw new Error('Failed to retrieve buses.');
+    });
+  };
+
+  MtaBusTime.prototype.monitorStop = function (stopId, cb) {
+
+    var data = {
+      key: config.key,
+      OperatorRef: config.opRef,
+      MonitoringRef: stopId, // Comes from the GTFS data (stops.txt)
+      // LineRef: "MTA NYCT_B63", // AgencyId + routeId
+      DirectionRef: 0, // 0 or 1
+      StopMonitoringDetailLevel: 'normal', // To get stop data after target stop, use 'calls' as value.
+      // MaximumNumberOfCallsOnwards:,
+      // MaximumStopVisits:, // Upper bound
+      // MinimumStopVisitsPerLine: // Lower bound
+    };
+
+    var stopPromise = $.ajax({
+      type: 'GET',
+      url: config.stopMonitoringUrl,
+      data: data,
+      dataType: "jsonp"
+    });
+
+    stopPromise.done(function (data) {
+      console.log('Stop monitoring result: ', data);
+      cb(data);
+    });
+
+    stopPromise.fail(function (error) {
+      console.error('Failed to get stop monitoring: ', error);
     });
   };
 
